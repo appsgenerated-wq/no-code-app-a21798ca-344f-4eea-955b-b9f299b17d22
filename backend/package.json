@@ -1,0 +1,16 @@
+{
+  "name": "manifest-backend",
+  "version": "1.0.0",
+  "main": "node_modules/manifest/dist/manifest/src/main.js",
+  "scripts": {
+    "start": "node node_modules/manifest/dist/manifest/src/main.js",
+    "dev": "npm run manifest",
+    "manifest": "node node_modules/manifest/dist/manifest/src/main.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "manifest": "^4.16.1"
+  }
+}

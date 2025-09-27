@@ -1,0 +1,68 @@
+name: FlavorFind
+description: A food discovery app to browse restaurants and menus.
+
+entities:
+  User:
+    authenticable: true
+    properties:
+      - name
+      - { name: email, type: email, options: { unique: true } }
+      - { name: role, type: choice, options: { values: [customer, owner, admin], default: customer } }
+    policies:
+      create:
+        - access: admin
+      read:
+        - { access: restricted, allow: User, condition: self }
+        - access: admin
+      update:
+        - { access: restricted, allow: User, condition: self }
+        - access: admin
+      delete:
+        - access: admin
+      signup:
+        - access: public
+
+  Restaurant:
+    properties:
+      - { name: name, type: string, options: { required: true } }
+      - { name: description, type: text }
+      - { name: cuisine, type: choice, options: { values: [Italian, Mexican, Asian, American, Other], default: Other } }
+      - { name: photo, type: image, options: { sizes: { thumbnail: { width: 400, height: 300 } } } }
+    belongsTo:
+      - { name: owner, entity: User }
+    policies:
+      create:
+        - { access: restricted, allow: User }
+      read:
+        - access: public
+      update:
+        - { access: restricted, allow: User, condition: self }
+      delete:
+        - { access: restricted, allow: User, condition: self }
+
+  Dish:
+    properties:
+      - { name: name, type: string, options: { required: true } }
+      - { name: description, type: text }
+      - { name: price, type: money, options: { currency: 'USD', required: true } }
+      - { name: photo, type: image, options: { sizes: { thumbnail: { width: 200, height: 200 } } } }
+    belongsTo:
+      - { name: restaurant, entity: Restaurant }
+    policies:
+      create:
+        - { access: restricted, allow: User }
+      read:
+        - access: public
+      update:
+        - { access: restricted, allow: User, condition: self, on: restaurant }
+      delete:
+        - { access: restricted, allow: User, condition: self, on: restaurant }
+
+
+# Health check endpoint for connection testing
+endpoints:
+  health:
+    path: /api/health
+    method: GET
+    policies: []
+    handler: healthCheck
